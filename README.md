@@ -57,7 +57,7 @@ It then traverses the source template, replacing names with values (there's rule
     For example: https:github.com/autotelic-sasha/autotelica_core.git 
 
     Then, during the template instantiation, the repo will be cloned into the directory containining the file. 
-    This works by simple substitution, `git clone --depth=1 repo_name_from_the_file path_to_folder_where_the_file_is` .
+    This works by simple substitution: `git clone --depth=1 repo_name_from_the_file path_to_folder_where_the_file_is` .
     Obviously, you can hack it by adding git parameters to the file, e.g. --brach bname https:github.com/autotelic-sasha/autotelica_core.git .
     *Note*: .git folder gets renamed to .original_dot_git ... you can delete it, ignore it, or rename it to .git if you are github wizard.
 
