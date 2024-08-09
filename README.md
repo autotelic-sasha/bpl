@@ -83,10 +83,10 @@ Say you created an ini file (say, config.ini) that looks like this:
 
 Now the names get mapped like this:
          
-    `{{blah}}` or `__blah___` is replaced by `blahblah`
-    `{{ping}}` or `__ping___` is replaced by `pong`
-    `{{meaningfull.boom}}` or `__meaningfull.boom___` is replaced by `bang`
-    `{{meaningfull.ping}}` or `__meaningfull.ping___` is replaced by `pongpong`
+    {{blah}} or __blah___ is replaced by blahblah
+    {{ping}} or __ping___ is replaced by pong
+    {{meaningfull.boom}} or __meaningfull.boom___ is replaced by bang
+    {{meaningfull.ping}} or __meaningfull.ping___ is replaced by pongpong
 
 Equivalent JSON would look like this:
 
@@ -122,20 +122,19 @@ Equivalent JSON would look like this:
 
          "extensions_to_ignore" : "xls,exe,so",
          "files_to_ignore" : "large_cpp.cpp, large_header.h"
-         (in json)
-     or
+
+   in json, or
 
          extensions_to_ignore = xls,exe,so
          files_to_ignore = large_cpp.cpp, large_header.h
-         (in ini)
- 
-     or similarly on the command line.
+
+   in ini files, or similarly on the command line.
 
     *Hints*
     1. files_to_ignore and extensions to ignore also work with wildcards (e.g. *part\of\path*)
     2. if a directory matches one of the listed names, everything in that directory is also not parsed. 
     3. names of files and directories are always parsed though
-<br>
- 2. If the same parameter appears both on a command line and in a config file, the command line version takes presedence.    
-<br>
- 3. There are examples in the `examples` folder.
+
+ 3. If the same parameter appears both on a command line and in a config file, the command line version takes presedence.    
+
+ 4. There are examples in the `examples` folder.
