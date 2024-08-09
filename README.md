@@ -26,10 +26,10 @@ It then traverses the source template, replacing names with values (there's rule
 <br>
 3.  Whenever a name is being replaced by a value:
 
-    - if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
-    - else if the name is spelled all in uppercase in the source, it is replaced by the uppercase version of the value in the target.
-    - otherwise it is replaces by the value as it appears in the input map.
-<br>
+- if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
+- else if the name is spelled all in uppercase in the source, it is replaced by the uppercase version of the value in the target.
+- otherwise it is replaces by the value as it appears in the input map.
+
 4.  In file and directory names:
 
     - names to be replaced are delimeted by two underscores either side of it (like **\_\_name__**).
