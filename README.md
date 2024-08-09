@@ -13,8 +13,8 @@ It is extensible, it can be extended in ways that will make it complicated. You 
 3. A target folder where the new code project is to be generated.
 4. A few other runtime configuration parameters:
     1. *strict* means that errors are reported when a replacement is not found and bpl thinks it should be.
-    2. *files to ignore* is a list of files, paths, or wildcards whose contents will not be parsed
-    3. *extension to ignore* is a list of files, paths, or wildcards whose contents will not be parsed
+    2. *files to ignore* is a list of files, paths, or wildcards whose contents will not be parsed.
+    3. *extension to ignore* is a list of files, paths, or wildcards whose contents will not be parsed.
 
 It then traverses the source template, replacing names with values (there's rules, see below) where they are found, and generates new files in the target folder. 
 
@@ -53,8 +53,7 @@ It then traverses the source template, replacing names with values (there's rule
 
 8.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
 
-    The file should contain a link to a repository on a single line, and nothing else. 
-    For example: https:github.com/autotelic-sasha/autotelica_core.git 
+    The file should contain a link to a repository on a single line, and nothing else (e.g. https:github.com/autotelic-sasha/autotelica_core.git).
 
     Then, during the template instantiation, the repo will be cloned into the directory containining the file. 
     This works by simple substitution: `git clone --depth=1 repo_name_from_the_file path_to_folder_where_the_file_is` .
@@ -75,18 +74,18 @@ Say you created an ini file (say, config.ini) that looks like this:
 
     ; Comment about the meaning of it all
     blah = blahblah
-    ping = pong
+    umm = pause
     [meaningfull]
     ; Some other thoughts about it all
     boom = bang
-    ping = pongpong
+    all = love
 
 Now the names get mapped like this:
          
-    {{blah}} or __blah___ is replaced by blahblah
-    {{ping}} or __ping___ is replaced by pong
-    {{meaningfull.boom}} or __meaningfull.boom___ is replaced by bang
-    {{meaningfull.ping}} or __meaningfull.ping___ is replaced by pongpong
+    {{blah}} or __blah__ is replaced by blahblah
+    {{umm}} or __umm__ is replaced by pause
+    {{meaningfull.boom}} or __meaningfull.boom__ is replaced by bang
+    {{meaningfull.all}} or __meaningfull.all__ is replaced by love
 
 Equivalent JSON would look like this:
 
@@ -96,14 +95,14 @@ Equivalent JSON would look like this:
                 "name" : "", 
                 "named_values": [
                     { "name" : "blah", "value" : "blahblah" },
-                    { "name" : "ping", "value" : "pong" }
+                    { "name" : "umm", "value" : "pause" }
                 ]
             },
             {
                 "name" : "meaningfull", 
                 "named_values": [
                     { "name" : "boom", "value" : "bang" },
-                    { "name" : "ping", "value" : "pongpong" }
+                    { "name" : "all", "value" : "love" }
                 ]
             }
         ]
