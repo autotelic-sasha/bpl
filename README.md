@@ -50,9 +50,9 @@ It then traverses the source template, replacing names with values (there's rule
     **Available functions**:
     - **GUID(int)** - this is because Visual Studio uses guids to link its internal files and configurations. 
     The argument is the id of the guid, GUID(0) is always the same GUID during a single run of the template generation, so is GUID(2) etc (but they are different to each other).
-<br>
+
 7.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
-<br>
+
     The file should contain a link to a repository on a single line, and nothing else. 
     For example: https:github.com/autotelic-sasha/autotelica_core.git 
 
