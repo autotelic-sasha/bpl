@@ -1,8 +1,10 @@
 # bpl is a minimalist code generation framework.
 
 It's opinionated and insists on being simple. Real simple. 
-It can be extended in ways that will make it complicated.
+
 Mostly what it does is replace strings with other strings, in file and directory names, and within files themselves. 
+
+It is extensible, it can be extended in ways that will make it complicated. You have to do it in C++, but it is all set up for it, and there's not much too it.
 
 **It takes as inputs:**
 
@@ -19,19 +21,21 @@ It then traverses the source template, replacing names with values (there's rule
 ## The replacement rules
 
 1.  There is a mapping in the input of names to values. This is just a table of strings.
+<br>
 2.  Names in the mapping are not case sensitive, values are case sensitive.
+<br>
 3.  Whenever a name is being replaced by a value:
 
     - if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
     - else if the name is spelled all in uppercase in the source, it is replaced by the uppercase version of the value in the target.
     - otherwise it is replaces by the value as it appears in the input map.
-
+<br>
 4.  In file and directory names:
 
     - names to be replaced are delimeted by two underscores either side of it (like **\_\_name__**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - there are no escape characters for file and directory name replacements.
-
+<br>
 5.  In the files' content:
 
     - names to be replaced are delimeted by two curly braces either side of it (like **{{name}}**).
@@ -40,21 +44,21 @@ It then traverses the source template, replacing names with values (there's rule
     - nesting is not allowed (e.g. you can't do silly things like {{name1{{name2}}name3}}, it's rude to expect people to be able to read that).
     - you can escape replacement by putting it in double braces (e.g. {{{{don't touch this}}}} evaluates to {{don't touch this}}).
     - there's no messing with escaping, like if you want to do it, you need it open and closed with four braces.
-
+<br>
 6.  There is a (very) small number of functions that can be used to generate special things. 
     They are hardcoded, to add one you gotta write some c++.
     They cannot be used in maps, you just specify that they should be used in the source files, but their arguments can come from the map.
     They cannot be used in file and directory name substitution; the syntax becomes too complicated.
     Their syntax is name(arg0, arg1, ... , arg5), the name is not case sensitive.
     They only allow up to five arguments, and arguments can be an integer, a double, a string (quoted), or a name from the map (case rules work the same)
-    
+<br>
     **Available functions**:
-
+<br>
     - **GUID(int)** - this is because Visual Studio uses guids to link its internal files and configurations. 
     The argument is the id of the guid, GUID(0) is always the same GUID during a single run of the template generation, so is GUID(2) etc (but they are different to each other).
-
+<br>
 7.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
-
+<br>
     The file should contain a link to a repository on a single line, and nothing else. 
     For example: https:github.com/autotelic-sasha/autotelica_core.git 
 
@@ -137,7 +141,7 @@ Equivalent JSON would look like this:
     1. files_to_ignore and extensions to ignore also work with wildcards (e.g. *part\of\path*)
     2. if a directory matches one of the listed names, everything in that directory is also not parsed. 
     3. names of files and directories are always parsed though
-     
+<br>
  2. If the same parameter appears both on a command line and in a config file, the command line version takes presedence.    
-
+<br>
  3. There are examples in the `examples` folder.
