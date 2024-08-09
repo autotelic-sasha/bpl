@@ -83,10 +83,10 @@ Say you created an ini file (say, config.ini) that looks like this:
 
 Now the names get mapped like this:
          
-    `{{blah}}` or `\_\_blah___` is replaced by `blahblah`
-    `{{ping}}` or `\_\_ping___` is replaced by `pong`
-    `{{meaningfull.boom}}` or `\_\_meaningfull.boom___` is replaced by `bang`
-    `{{meaningfull.ping}}` or `\_\_meaningfull.ping___` is replaced by `pongpong`
+    `{{blah}}` or `__blah___` is replaced by `blahblah`
+    `{{ping}}` or `__ping___` is replaced by `pong`
+    `{{meaningfull.boom}}` or `__meaningfull.boom___` is replaced by `bang`
+    `{{meaningfull.ping}}` or `__meaningfull.ping___` is replaced by `pongpong`
 
 Equivalent JSON would look like this:
 
