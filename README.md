@@ -1,4 +1,4 @@
-# bpl is a minimalist code generation framework.
+# bpl is a minimalist code generation framework
 
 It's opinionated and insists on being simple. Real simple. 
 
