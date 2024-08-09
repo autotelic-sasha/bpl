@@ -17,7 +17,7 @@ It is extensible, it can be extended in ways that will make it complicated. You 
     3. *extension to ignore* is a list of files, paths, or wildcards whose contents will not be parsed.
 
 It then traverses the source template, replacing names with values (there's rules, see below) where they are found, and generates new files in the target folder. 
-In file names you mark the values to be replaces by double underscores (like **\_\_name__**), in files by double braces (like **{{name}}**). There's some functions that and some special file names that you can use for special stuff (well, one of each at the time of writing). There's an 'examples' folder too.
+In file names you mark the values to be replaces by double underscores (like **\_\_name__**), in files by double braces (like **{{name}}**). There's some functions that and some special file names that you can use for special stuff (well, one of each at the time of writing). There's an `examples` folder too, if you prefer learning by reading code.
 
 That's pretty much it really - the rest is just a few bells and whistles, and some disambiguation rules. 
 
