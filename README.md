@@ -17,22 +17,32 @@ It is extensible, it can be extended in ways that will make it complicated. You 
     3. *extension to ignore* is a list of files, paths, or wildcards whose contents will not be parsed.
 
 It then traverses the source template, replacing names with values (there's rules, see below) where they are found, and generates new files in the target folder. 
+In file names you mark the values to be replaces by double underscores (like **\_\_name__**), in files by double braces (like **{{name}}**). There's some functions that and some special file names that you can use for special stuff (well, one of each at the time of writing). There's an 'examples' folder too.
+
+That's pretty much it really - the rest is just a few bells and whistles, and some disambiguation rules. 
 
 ## The replacement rules
 
 1.  There is a mapping in the input of names to values. This is just a table of strings.
 2.  Names in the mapping are not case sensitive, values are case sensitive.
-3.  Whenever a name is being replaced by a value:
+3.  You can control the case of replacements by how you capitalise the names.
+    Say, it there is a mapping defined: name -> Value, then:
+
+        {{name}} or __name__ is replaced by value
+        {{NAME}} or __NAME__ is replaced by VALUE
+        {{Name}} or __Name__ is replaced by Value
+    
+    Formally, whenever a name is being replaced by a value:
     - if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
     - else if the name is spelled all in uppercase in the source, it is replaced by the uppercase version of the value in the target.
     - otherwise it is replaces by the value as it appears in the input map.
-
-4.  In file and directory names:
+    
+6.  In file and directory names:
     - names to be replaced are delimeted by two underscores either side of it (like **\_\_name__**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - there are no escape characters for file and directory name replacements.
 
-5.  In the files' content:
+7.  In the files' content:
     - names to be replaced are delimeted by two curly braces either side of it (like **{{name}}**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - whitespace surrounding names in the braces is eaten.
@@ -40,7 +50,7 @@ It then traverses the source template, replacing names with values (there's rule
     - you can escape replacement by putting it in double braces (e.g. {{{{don't touch this}}}} evaluates to {{don't touch this}}).
     - there's no messing with escaping, like if you want to do it, you need it open and closed with four braces.
 
-6.  There is a (very) small number of functions that can be used to generate special things. 
+8.  There is a (very) small number of functions that can be used to generate special things. 
     - they are hardcoded, to add one you gotta write some c++.
     - they cannot be used in maps, you just specify that they should be used in the source files, but their arguments can come from the map.
     - they cannot be used in file and directory name substitution; the syntax becomes too complicated.
@@ -51,7 +61,7 @@ It then traverses the source template, replacing names with values (there's rule
     - **GUID(int)** - this is because Visual Studio uses guids to link its internal files and configurations. 
     The argument is an identifier of the particular guid: GUID(0) is always the same GUID during a single run of the template generation, so is GUID(2) etc (but they are different to each other).
 
-8.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
+9.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
 
     The file should contain a link to a repository on a single line, and nothing else (e.g. https:github.com/autotelic-sasha/autotelica_core.git).
 
