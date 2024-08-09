@@ -41,17 +41,17 @@ It then traverses the source template, replacing names with values (there's rule
     - there's no messing with escaping, like if you want to do it, you need it open and closed with four braces.
 
 6.  There is a (very) small number of functions that can be used to generate special things. 
-    They are hardcoded, to add one you gotta write some c++.
-    They cannot be used in maps, you just specify that they should be used in the source files, but their arguments can come from the map.
-    They cannot be used in file and directory name substitution; the syntax becomes too complicated.
-    Their syntax is name(arg0, arg1, ... , arg5), the name is not case sensitive.
-    They only allow up to five arguments, and arguments can be an integer, a double, a string (quoted), or a name from the map (case rules work the same)
+    - they are hardcoded, to add one you gotta write some c++.
+    - they cannot be used in maps, you just specify that they should be used in the source files, but their arguments can come from the map.
+    - they cannot be used in file and directory name substitution; the syntax becomes too complicated.
+    - their syntax is name(arg0, arg1, ... , arg5), the name is not case sensitive.
+    - they only allow up to five arguments, and arguments can be an integer, a double, a string (quoted), or a name from the map (case rules work the same)
 
     **Available functions**:
     - **GUID(int)** - this is because Visual Studio uses guids to link its internal files and configurations. 
-    The argument is the id of the guid, GUID(0) is always the same GUID during a single run of the template generation, so is GUID(2) etc (but they are different to each other).
+    The argument is an identifier of the particular guid: GUID(0) is always the same GUID during a single run of the template generation, so is GUID(2) etc (but they are different to each other).
 
-7.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
+8.  For the times when you want to clone a git repo into a subfolder of a project, there is a special file name: **\_\_GITCLONE__**. 
 
     The file should contain a link to a repository on a single line, and nothing else. 
     For example: https:github.com/autotelic-sasha/autotelica_core.git 
