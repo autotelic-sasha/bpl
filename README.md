@@ -23,35 +23,31 @@ It then traverses the source template, replacing names with values (there's rule
 1.  There is a mapping in the input of names to values. This is just a table of strings.
 2.  Names in the mapping are not case sensitive, values are case sensitive.
 3.  Whenever a name is being replaced by a value:
-
-- if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
-- else if the name is spelled all in uppercase in the source, it is replaced by the uppercase version of the value in the target.
-- otherwise it is replaces by the value as it appears in the input map.
+    - if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
+    - else if the name is spelled all in uppercase in the source, it is replaced by the uppercase version of the value in the target.
+    - otherwise it is replaces by the value as it appears in the input map.
 
 4.  In file and directory names:
-
     - names to be replaced are delimeted by two underscores either side of it (like **\_\_name__**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - there are no escape characters for file and directory name replacements.
-<br>
-5.  In the files' content:
 
+5.  In the files' content:
     - names to be replaced are delimeted by two curly braces either side of it (like **{{name}}**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - whitespace surrounding names in the braces is eaten.
     - nesting is not allowed (e.g. you can't do silly things like {{name1{{name2}}name3}}, it's rude to expect people to be able to read that).
     - you can escape replacement by putting it in double braces (e.g. {{{{don't touch this}}}} evaluates to {{don't touch this}}).
     - there's no messing with escaping, like if you want to do it, you need it open and closed with four braces.
-<br>
+
 6.  There is a (very) small number of functions that can be used to generate special things. 
     They are hardcoded, to add one you gotta write some c++.
     They cannot be used in maps, you just specify that they should be used in the source files, but their arguments can come from the map.
     They cannot be used in file and directory name substitution; the syntax becomes too complicated.
     Their syntax is name(arg0, arg1, ... , arg5), the name is not case sensitive.
     They only allow up to five arguments, and arguments can be an integer, a double, a string (quoted), or a name from the map (case rules work the same)
-<br>
+
     **Available functions**:
-<br>
     - **GUID(int)** - this is because Visual Studio uses guids to link its internal files and configurations. 
     The argument is the id of the guid, GUID(0) is always the same GUID during a single run of the template generation, so is GUID(2) etc (but they are different to each other).
 <br>
