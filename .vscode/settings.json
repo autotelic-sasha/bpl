@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "type_traits": "cpp",
+        "iosfwd": "cpp",
+        "functional": "cpp"
+    },
+    "bpl":{
+        "release_target_name" : "bpl",
+        "debug_target_name" : "bpl_d"
+    }
+}
