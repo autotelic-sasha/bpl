@@ -21,9 +21,7 @@ It then traverses the source template, replacing names with values (there's rule
 ## The replacement rules
 
 1.  There is a mapping in the input of names to values. This is just a table of strings.
-<br>
 2.  Names in the mapping are not case sensitive, values are case sensitive.
-<br>
 3.  Whenever a name is being replaced by a value:
 
 - if the name is spelled all in lowercase in the source, it is replaced by the lowercase version if the value in the target.
