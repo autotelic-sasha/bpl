@@ -45,7 +45,7 @@ It then traverses the source template, replacing names with values (there's rule
     - they cannot be used in maps, you just specify that they should be used in the source files, but their arguments can come from the map.
     - they cannot be used in file and directory name substitution; the syntax becomes too complicated.
     - their syntax is name(arg0, arg1, ... , arg5), the name is not case sensitive.
-    - they only allow up to five arguments, and arguments can be an integer, a double, a string (quoted), or a name from the map (case rules work the same)
+    - an arguments can be an integer, a double, a string (quoted), or a name from the map (not quoted, and case rules work the same).
 
     **Available functions**:
     - **GUID(int)** - this is because Visual Studio uses guids to link its internal files and configurations. 
