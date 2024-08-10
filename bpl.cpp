@@ -18,7 +18,7 @@ int main(int argc, const char* argv[])
 	// define DEBUGGING_ARGS when debugging, then you can define
 	// debug versions of argv and argc to use, makes debugging a whole lot easier
 #ifndef NDEBUG
-#define DEBUGGING_ARGS 	
+//#define DEBUGGING_ARGS 	
 #endif
 #ifdef DEBUGGING_ARGS
 	const char* debug_argv[] = {
@@ -93,12 +93,12 @@ int main(int argc, const char* argv[])
 				{ "generate_config" },
 				0,
 				generate_config)
-		.register_command(
-			"Describe template",
-			"Print the list of all the names and functions used per file in template.",
-			{ "describe" },
-			0,
-			describe);
+			.register_command(
+				"Describe template",
+				"Print the list of all the names and functions used per file in template.",
+				{ "describe" },
+				0,
+				describe);
 
 		// parsing the command line
 #ifdef DEBUGGING_ARGS
