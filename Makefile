@@ -32,8 +32,14 @@ DEBUG_ONLY_LD_LIBRARY_PATHS :=
 INCLUDE_FILES_TO_PACKAGE := 
 # Additional packaging commands. 
 # Note: these are executed from within RELEASE_PACKAGE_DIR and DEBUG_PACKAGE_DIR resp.
-RELEASE_ADDITIONAL_PACKAGING := 
-DEBUG_ADDITIONAL_PACKAGING := 
+RELEASE_ADDITIONAL_PACKAGING := cp -vrf $(CURRENT_PATH)/icons/ ./; \
+								cp -vf $(CURRENT_PATH)/bpl_gui.py ./; \
+								cp -vf $(CURRENT_PATH)/bpl_gui.ini ./; \
+								cp -vf $(CURRENT_PATH)/bpl_gui.sh ./; 
+DEBUG_ADDITIONAL_PACKAGING := cp -vrf $(CURRENT_PATH)/icons/ ./; \
+								cp -vf $(CURRENT_PATH)/bpl_gui.py ./; \
+								cp -vf $(CURRENT_PATH)/bpl_gui.ini ./; \
+								cp -vf $(CURRENT_PATH)/bpl_gui.sh ./; 
 # LD_LIBRARY_PATHs for packaging.
 RELEASE_LD_LIBRARY_PATH :=
 DEBUG_LD_LIBRARY_PATH :=
@@ -60,7 +66,7 @@ SPACE := $(EMPTY) $(EMPTY)
 TIDY_TARGET_NAME := $(subst $(SPACE),_,$(strip $(TARGET_BASE_NAME)))
 
 # Directories
-BUILD    :=  $(CURRENT_PATH)/linux_build
+BUILD    :=  $(CURRENT_PATH)/linux_build/$(TIDY_TARGET_NAME)
 OBJ_DIR  := $(BUILD)/objects
 RELEASE_OBJ_DIR  := $(OBJ_DIR)/release
 DEBUG_OBJ_DIR  := $(OBJ_DIR)/debug

@@ -18,6 +18,7 @@ executable_path = ""
 this_directory = os.path.dirname(__file__)
 
 def find_executable():
+    executable_path = ""
     if sys.platform == "win32":
         if os.path.exists(os.path.join(this_directory,"bpl.exe")):
             executable_path = str(os.path.join(this_directory,"bpl.exe"))
@@ -61,7 +62,9 @@ def list_schemes():
         ret = ["default"]
     return ret    
 
-def load_colors(color_scheme_override = ""):
+font_size = 10
+def load_config(color_scheme_override = ""):
+    global font_size
     global color_scheme
     global bg_color
     global bg_color_mid
@@ -69,6 +72,8 @@ def load_colors(color_scheme_override = ""):
     global fg_color
     
     content = configs.sections()
+    if "font_size" in configs.options("settings"):
+        font_size = configs.get("settings","font_size")
     if not color_scheme_override and "settings" in content:
         if "color_scheme" in configs.options("settings"):
             color_scheme = configs.get("settings","color_scheme")
@@ -84,23 +89,23 @@ def load_colors(color_scheme_override = ""):
 
 # TK setup
 root = tk.Tk()
-the_font = font.nametofont("TkDefaultFont")
-the_font.configure(size=10, family="Helvetica")
-
-root.option_add("*Font", the_font)
-root.title("Autotelica bpl")
-root.iconbitmap(os.path.join(this_directory,"icons", "logo.ico"))
-root.option_add("*Dialog.msg.background",bg_color)
-padx = 6
-pady = 4
-
-
+# icons
+logo_image = tk.PhotoImage(file=
+                             os.path.join(this_directory,"icons", "logo_16.png"))
 folder_image = tk.PhotoImage(file=
                              os.path.join(this_directory,"icons", "folder_16_wht.png"), 
                              height=16, width=16)
 help_image = tk.PhotoImage(file=
                            os.path.join(this_directory,"icons", "help_16_wht.png"),
                            height=16, width=16)
+
+
+root.title("Autotelica bpl")
+root.iconphoto(True, logo_image)
+root.option_add("*Dialog.msg.background",bg_color)
+padx = 6
+pady = 4
+
 
 #menu for edit boxes
 class edit_menu:
@@ -148,13 +153,14 @@ class edit_menu:
 
 # a nice box for showing outputs
 class output_box(tk.simpledialog.Dialog):
-    def __init__(self, parent, title, message):
+    def __init__(self, parent, title, message, the_font):
         self.message = message.replace("\r\n", "\n")
         # work out the size of the window
         lines = self.message.split("\n")
         lines = [l.strip() for l in lines]
         self.lines = len(lines)
         self.height = min(self.lines, 40)
+        self.the_font = the_font
         longest = 0
         for l in lines:
             if(len(l) > longest):
@@ -165,21 +171,21 @@ class output_box(tk.simpledialog.Dialog):
 
     def body(self, frame):
         # print(type(frame)) # tkinter.Frame
-        self.iconbitmap("logo.ico")
+        self.iconphoto(True, logo_image)
         self.configure(bg=bg_color)
         self.resizable(False, False)
 
         if self.lines > self.height:
             text = scrolledtext.ScrolledText(frame, 
                     width=self.width, height=self.height, relief="flat",
-                    bg=bg_color, fg=fg_color, font=the_font,
+                    bg=bg_color, fg=fg_color, font=self.the_font,
                     selectbackground = bg_color_light,
                     padx=padx, pady=pady)
             text.vbar.configure(bg=bg_color, troughcolor =fg_color)
         else:
             text = tk.Text(frame, 
                     width=self.width, height=self.height, relief="flat",
-                    bg=bg_color, fg=fg_color, font=the_font,
+                    bg=bg_color, fg=fg_color, font=self.the_font,
                     selectbackground = bg_color_light,
                     padx=padx, pady=pady)
         menu = edit_menu(text, False, lambda : "sel" in text.tag_names(tk.INSERT))
@@ -238,7 +244,7 @@ def create_small_btn(frame, command, help = False):
 def create_big_btn(frame, text, command):
     return tk.Button(frame, text = text, command = command, 
                       width = 20,
-                      bd=0, highlightthickness=1, relief="solid", 
+                      bd=0, highlightthickness=1, relief="flat", 
                       default="active",
                       highlightcolor=fg_color,
                       activebackground = bg_color, activeforeground = fg_color, 
@@ -251,7 +257,7 @@ def create_check_button(frame, text, var_):
     return tk.Checkbutton(frame, text = text, variable=var_, 
                         onvalue=1, offvalue = 0, 
                         offrelief = tk.FLAT,relief = tk.FLAT,
-                        highlightthickness=1,bd=1,
+                        highlightthickness=0,bd=0,
                         selectcolor = bg_color, activebackground = bg_color, 
                         activeforeground = fg_color,
                         bg=bg_color, fg=fg_color)
@@ -275,6 +281,10 @@ def ask_filename(title, var):
 
 # configuring the window layout
 def configure():
+    the_font = font.nametofont("TkDefaultFont")
+    the_font.configure(size=font_size, family="Helvetica")
+    root.option_add("*Font", the_font)
+
     # frame in the root
     frame = tk.Frame(root, padx=2*padx, pady=2*pady)
     frame.configure(bg=bg_color)
@@ -390,7 +400,7 @@ def configure():
         b = os.path.exists(cmd_line[0])
         result = subprocess.run(cmd_line, stdout=subprocess.PIPE)
         text = result.stdout.decode("utf-8")
-        output_box(root, title, text)
+        output_box(root, title, text, the_font)
 
     # generate configuration file
     def generate_configuration():
@@ -444,7 +454,7 @@ color_scheme_override = ""
 if arguments.theme:
     color_scheme_override = arguments.theme
 
-load_colors(color_scheme_override)    
+load_config(color_scheme_override)    
 if not executable_path:
     executable_path = find_executable()
 
