@@ -1,0 +1,1 @@
+python3 .\bpl_gui.py %*
