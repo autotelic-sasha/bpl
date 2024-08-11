@@ -120,11 +120,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y $(ProjectDir)windows_build\bpl\apps\$(TargetName).exe $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\
-xcopy /EHCIY $(ProjectDir)icons\ $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\icons
-xcopy /Y $(ProjectDir)bpl_gui.py $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\
-xcopy /Y $(ProjectDir)bpl_gui.ini $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\
-xcopy /Y $(ProjectDir)bpl_gui.bat $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\</Command>
+      <Command>xcopy /Y $(ProjectDir)windows_build\bpl\apps\$(TargetName).exe $(ProjectDir)windows_build\bpl\packages\$(Configuration)\
+xcopy /EHCIY $(ProjectDir)icons\ $(ProjectDir)windows_build\bpl\packages\$(Configuration)\icons
+xcopy /Y $(ProjectDir)bpl_gui.py $(ProjectDir)windows_build\bpl\packages\$(Configuration)\
+xcopy /Y $(ProjectDir)bpl_gui.ini $(ProjectDir)windows_build\bpl\packages\$(Configuration)\
+xcopy /Y $(ProjectDir)bpl_gui.bat $(ProjectDir)windows_build\bpl\packages\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,11 +144,11 @@ xcopy /Y $(ProjectDir)bpl_gui.bat $(ProjectDir)windows_build\bpl\packages\$(Proj
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y $(ProjectDir)windows_build\bpl\apps\$(TargetName).exe $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\
-xcopy /EHCIY $(ProjectDir)icons\ $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\icons
-xcopy /Y $(ProjectDir)bpl_gui.py $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\
-xcopy /Y $(ProjectDir)bpl_gui.ini $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\
-xcopy /Y $(ProjectDir)bpl_gui.bat $(ProjectDir)windows_build\bpl\packages\$(ProjectName)\$(Configuration)\</Command>
+      <Command>xcopy /Y $(ProjectDir)windows_build\bpl\apps\$(TargetName).exe $(ProjectDir)windows_build\bpl\packages\$(Configuration)\
+xcopy /EHCIY $(ProjectDir)icons\ $(ProjectDir)windows_build\bpl\packages\$(Configuration)\icons
+xcopy /Y $(ProjectDir)bpl_gui.py $(ProjectDir)windows_build\bpl\packages\$(Configuration)\
+xcopy /Y $(ProjectDir)bpl_gui.ini $(ProjectDir)windows_build\bpl\packages\$(Configuration)\
+xcopy /Y $(ProjectDir)bpl_gui.bat $(ProjectDir)windows_build\bpl\packages\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
