@@ -18,9 +18,20 @@ It is extensible, it can be extended in ways that will make it complicated. You 
 
 It then traverses the source template, replacing names with values (there's rules, see below) where they are found, and generates new files in the target folder. 
 
-In file names you mark the values to be replaces by double underscores (like **\_\_name__**), in files by double braces (like **{{name}}**). There's some functions that and some special file names that you can use for special stuff (well, one of each at the time of writing). There's an `examples` folder too, if you prefer learning by reading code.
+In file names you mark the values to be replaces by double underscores (like **\_\_name__**), in files by double braces (like **{{name}}**). 
+
+There's some functions and some special file names that you can use for special stuff (well, one of each at the time of writing, to create guids and to pull stuff from github on the fly). 
+
+There's an `examples` folder too, if you prefer learning by reading code.
 
 That's pretty much it really - the rest is just a few bells and whistles, and some disambiguation rules. 
+
+## GUI
+
+There's also a little gui to make it easier to use. You need to have python 3 installed for it to work, but not much else. Run blp_gui.sh on linux or blp_gui.bat on windows. 
+
+You can configure visuals in blp_gui.ini file, and run it with -h command line option for help.
+
 
 ## The replacement rules
 
