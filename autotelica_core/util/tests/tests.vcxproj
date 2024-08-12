@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{83252bff-92ce-4edc-b940-93e989f43ce3}</ProjectGuid>
-    <RootNamespace>testrunner</RootNamespace>
+    <ProjectGuid>{2F6CEBB9-BEF9-7F0A-6F8D-07061A0E8225}</ProjectGuid>
+    <RootNamespace>dlluse</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,11 +70,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IntDir>$(ShortProjectName)_build\$(Platform)\$(Configuration)\</IntDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>$(ShortProjectName)_build\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)windows_build\apps\</OutDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+    <IntDir>$(ProjectDir)windows_build\objects\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)windows_build\apps\</OutDir>
+    <IntDir>$(ProjectDir)windows_build\objects\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -110,12 +113,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y $(ProjectDir)windows_build\apps\$(TargetName).exe $(ProjectDir)windows_build\packages\tests\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -125,7 +131,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,22 +139,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y $(ProjectDir)windows_build\apps\$(TargetName).exe $(ProjectDir)windows_build\packages\tests\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="tests_registry.cpp" />
-    <ClCompile Include="test_runner.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="asserts_examples.h" />
-    <ClInclude Include="cl_parsing_examples.h" />
-    <ClInclude Include="comparissons_examples.h" />
-    <ClInclude Include="diagnostic_messages_examples.h" />
-    <ClInclude Include="examples_template.h" />
-    <ClInclude Include="macro_magic_examples.h" />
-    <ClInclude Include="std_disambiguation_examples.h" />
-    <ClInclude Include="std_pretty_printing_examples.h" />
-    <ClInclude Include="string_util_examples.h" />
-    <ClInclude Include="testing_util_examples.h" />
+    <ClCompile Include="tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

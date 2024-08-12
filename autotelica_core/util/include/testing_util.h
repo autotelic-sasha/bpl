@@ -753,7 +753,7 @@ namespace autotelica {
 #define AF_DECLARE_TEST_SET( description, test_namespace, examples_function, test_function )\
 namespace autotelica {\
     namespace examples {\
-        namespace test_namespace {\
+        namespace test_namespace##__af_tests_impl {\
             AF_DECLARE_TEST_SET_CLASS(run, description);\
             static void af_examples() {\
                 AF_START_EXAMPLES_ONLY();\
@@ -764,17 +764,13 @@ namespace autotelica {\
             AF_END_TEST_SET_CLASS_DECLARATION();\
         }\
     }\
+}\
+namespace {\
+	static bool test_namespace##__af_test_registration_ = \
+		autotelica::testing::all_tests::register_tests<autotelica::examples::test_namespace##__af_tests_impl::run>( #test_namespace );\
 }
 
 #define af_declare_test_set( description, test_namespace, examples_function, test_function) AF_DECLARE_TEST_SET( description, test_namespace, examples_function, test_function )\
-
-// register a test set
-#define AF_REGISTER_TEST_SET( test_namespace )  namespace {\
-		static bool NAME_WITH_LINE(__test_registration_) = \
-			autotelica::testing::all_tests::register_tests<autotelica::examples::test_namespace::run>( #test_namespace );\
-	}
-
-#define af_register_test_set( test_namespace ) AF_REGISTER_TEST_SET( test_namespace )
 
 // list all registered test sets 
 #define AF_LIST_TEST_SETS( ) autotelica::testing::all_tests::list_tests();

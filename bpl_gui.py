@@ -24,19 +24,19 @@ def find_executable():
             executable_path = str(os.path.join(this_directory,"bpl.exe"))
         elif os.path.exists(os.path.join(this_directory,"bpl_d.exe")):
             executable_path = str(os.path.join(this_directory,"bpl_d.exe"))
-        elif os.path.exists(os.path.join(this_directory,"windows_build/bpl/packages/release/bpl.exe")):
-            executable_path = str(os.path.join(this_directory,"windows_build/bpl/packages/release/bpl.exe"))
-        elif os.path.exists(os.path.join(this_directory,"windows_build/bpl/packages/debug/bpl_d.exe")):
-            executable_path = str(os.path.join(this_directory,"windows_build/bpl/packages/debug/bpl_d.exe"))
+        elif os.path.exists(os.path.join(this_directory,"windows_build/packages/bpl/release/bpl.exe")):
+            executable_path = str(os.path.join(this_directory,"windows_build/packages/bpl/release/bpl.exe"))
+        elif os.path.exists(os.path.join(this_directory,"windows_build/packages/bpl/debug/bpl_d.exe")):
+            executable_path = str(os.path.join(this_directory,"windows_build/packages/bpl/debug/bpl_d.exe"))
     else:
         if os.path.exists(os.path.join(this_directory,"bpl")):
             executable_path = str(os.path.join(this_directory,"bpl"))
         elif os.path.exists(os.path.join(this_directory,"bpl_d")):
             executable_path = str(os.path.join(this_directory,"bpl_d"))
-        elif os.path.exists(os.path.join(this_directory,"linux_build/bpl/packages/release/bpl")):
-            executable_path = str(os.path.join(this_directory,"linux_build/bpl/packages/release/bpl"))
-        elif os.path.exists(os.path.join(this_directory,"linux_build/bpl/packages/debug/bpl_d")):
-            executable_path = str(os.path.join(this_directory,"linux_build/bpl/packages/debug/bpl_d"))
+        elif os.path.exists(os.path.join(this_directory,"linux_build/packages/bpl/release/bpl")):
+            executable_path = str(os.path.join(this_directory,"linux_build/packages/bpl/release/bpl"))
+        elif os.path.exists(os.path.join(this_directory,"linux_build/packages/bpl/debug/bpl_d")):
+            executable_path = str(os.path.join(this_directory,"linux_build/packages/bpl/debug/bpl_d"))
     return executable_path
 
 # colours
