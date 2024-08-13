@@ -6,6 +6,24 @@
 
 #include "autotelica_core/util/include/cl_parsing.h"
 #include "autotelica_core/util/include/asserts.h"
+// c++ filesystem support is a bit of a mess pre-C++17
+// and microsoft's support for standard __cplusplus macro is even worse
+// so we have to do horrors like this
+// c++ filesystem support is a bit of a mess pre-C++17
+// and microsoft's support for standard __cplusplus macro is even worse
+// so we have to do horrors like this
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+//C++17 specific stuff here
+#include <filesystem>
+using path_t = std::filesystem::path;
+namespace filesystem_n = std::filesystem;
+#else
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+using path_t = std::experimental::filesystem::path;
+namespace filesystem_n = std::experimental::filesystem;
+#endif
+
 
 using namespace autotelica;
 using namespace autotelica::cl_parsing;
@@ -185,13 +203,13 @@ int main(int argc, const char* argv[])
 		commands.execute();
 
 		if (commands.has("generate")) {
-			std::cout << "\n\nDone creating project in folder " << target_path << std::endl;
+			std::cout << "\n\nDone creating project in folder " << path_t(target_path).make_preferred() << std::endl;
 		}
 		else if (commands.has("generate_config")) {
-			std::cout << "\n\nDone creating " << config_path << std::endl;
+			std::cout << "\n\nDone creating " << path_t(config_path).make_preferred() << std::endl;
 		}
 		else {
-			std::cout << "\n\nDone describing " << source_path << std::endl;
+			std::cout << "\n\nDone describing " << path_t(source_path).make_preferred() << std::endl;
 		}
 	}
 	catch (...) {

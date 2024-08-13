@@ -45,6 +45,7 @@ bg_color = "#371B58"
 bg_color_mid = "#4C3575"
 bg_color_light = "#7858A6"
 fg_color = "white"
+fg_color_alert = "orange"
 
 configs = None
 if os.path.exists(os.path.join(this_directory,"bpl_gui.ini")):
@@ -70,6 +71,7 @@ def load_config(color_scheme_override = ""):
     global bg_color_mid
     global bg_color_light
     global fg_color
+    global fg_color_alert
     
     content = configs.sections()
     if "font_size" in configs.options("settings"):
@@ -85,6 +87,7 @@ def load_config(color_scheme_override = ""):
         bg_color_mid = configs.get(color_scheme, "bg_color_mid")
         bg_color_light = configs.get(color_scheme, "bg_color_light")
         fg_color = configs.get(color_scheme, "fg_color")
+        fg_color_alert = configs.get(color_scheme, "fg_color_alert")
         
 
 # TK setup
@@ -216,7 +219,7 @@ def create_entry_style(frame):
                         'sticky': 'we'})], 'sticky': 'we'})],
                         'border':1, 'sticky': 'we'})])
     entry_style.configure('EntryStyle.TEntry', 
-                        boreder = 1,
+                        border = 1,
                         padding=(5,2,2,2),  
                         background=bg_color_mid,
                         foreground=fg_color,
@@ -230,9 +233,37 @@ def create_entry_style(frame):
                         selectforeground=[("focus", fg_color), ("!focus", fg_color)]
                     )    
 
-def create_entry(frame, var, width, entry_style):
+def create_entry_style_alert(frame):
+    entry_style=ttk.Style(frame)
+    entry_style.element_create("alerted.field", "from", "clam")
+    entry_style.layout("EntryStyle.TEntryAlert",
+                    [('Entry.alerted.field', {'children': [(
+                        'Entry.background', {'children': [(
+                            'Entry.padding', {'children': [(
+                                'Entry.textarea', {'sticky': 'we'})],
+                        'sticky': 'we'})], 'sticky': 'we'})],
+                        'border':1, 'sticky': 'we'})])
+    entry_style.configure('EntryStyle.TEntryAlert', 
+                        border = 1,
+                        padding=(5,2,2,2),  
+                        background=bg_color_mid,
+                        foreground=fg_color_alert,
+                        fieldbackground=bg_color_mid,
+                        insertcolor=fg_color,
+                        selectbackground = bg_color
+                        )
+    entry_style.map('EntryStyle.TEntry', 
+                        fieldbackground=[("focus", bg_color_light), ("!focus", bg_color_mid)],
+                        selectbackground=[("focus", bg_color), ("!focus", bg_color)],
+                        selectforeground=[("focus", fg_color), ("!focus", fg_color)]
+                    )  
+
+def create_entry(frame, var, width):
     edit_box = ttk.Entry(frame, textvariable=var, width=width, style="EntryStyle.TEntry")
     menu = edit_menu(edit_box, True, edit_box.select_present)
+    def on_focus_in(e):
+        e.widget.configure(style="EntryStyle.TEntry")
+    edit_box.bind("<FocusIn>", on_focus_in)
     return edit_box
 
 def create_small_btn(frame, command, help = False):
@@ -268,7 +299,7 @@ def ask_directory(title, var):
     root.update_idletasks()
     dir = filedialog.askdirectory(initialdir=var.get(),mustexist=True, title=title)
     if(dir):
-        var.set(dir)
+        var.set(os.path.normpath(dir))
     root.update_idletasks()
 
 def ask_filename(title, var):
@@ -276,7 +307,7 @@ def ask_filename(title, var):
     f = filedialog.askopenfilename(initialdir=var.get(),title=title, 
                                    filetypes=[("JSON file","*.json *.jsn"), ("Ini file","*.ini")])
     if(f):
-        var.set(f)
+        var.set(os.path.normpath(f))
     root.update_idletasks()
 
 # configuring the window layout
@@ -291,12 +322,13 @@ def configure():
     frame.pack()
 
     # styling for entry boxes
-    entry_style = create_entry_style(frame)
-
+    create_entry_style(frame)
+    create_entry_style_alert(frame)
+    
     # source path
     sp_label = create_label(frame, "Source Template Path")
     sp_var = tk.StringVar()
-    sp_entry = create_entry(frame, sp_var, 60, entry_style)
+    sp_entry = create_entry(frame, sp_var, 60)
 
     def sp_folder():
         ask_directory("Source Template Path", sp_var)
@@ -310,7 +342,7 @@ def configure():
     # target path
     tp_label = create_label(frame, "Target Project Path")
     tp_var = tk.StringVar()
-    tp_entry = create_entry(frame, tp_var, 60, entry_style)
+    tp_entry = create_entry(frame, tp_var, 60)
     
     def tp_folder():
         ask_directory("Source Template Path", tp_var)
@@ -324,7 +356,7 @@ def configure():
     # config file path
     cp_label = create_label(frame, "Configuration File Path")
     cp_var = tk.StringVar()
-    cp_entry = create_entry(frame, cp_var, 60, entry_style)
+    cp_entry = create_entry(frame, cp_var, 60)
     
     def cp_file():
         ask_filename("Configuration File Path", cp_var)
@@ -342,7 +374,7 @@ def configure():
     # named values
     nv_label = create_label(frame, "Named Values")
     nv_var = tk.StringVar()
-    nv_entry = create_entry(frame, nv_var, 60, entry_style)
+    nv_entry = create_entry(frame, nv_var, 60)
     
     nv_label.grid(row=5, column=0, sticky=tk.W, padx=padx, pady=pady)
     nv_entry.grid(row=5, column=1, columnspan=2, sticky=tk.E, padx=padx, pady=pady)
@@ -351,7 +383,7 @@ def configure():
     ei_label = create_label(frame, "Extensions To Ignore")
     ei_var = tk.StringVar()
     ei_var.set("*.xl*, *.exe, *.dll")
-    ei_entry = create_entry(frame, ei_var, 40, entry_style)
+    ei_entry = create_entry(frame, ei_var, 40)
     
     ei_label.grid(row=6, column=0, sticky=tk.W, padx=padx, pady=pady)
     ei_entry.grid(row=6, column=1, columnspan=2, sticky=tk.W, padx=padx, pady=pady)
@@ -359,7 +391,7 @@ def configure():
     # files to ignore
     fi_label = create_label(frame, "Files To Ignore")
     fi_var = tk.StringVar()
-    fi_entry = create_entry(frame, fi_var, 40, entry_style)
+    fi_entry = create_entry(frame, fi_var, 40)
     
     fi_label.grid(row=7, column=0, sticky=tk.W, padx=padx, pady=pady)
     fi_entry.grid(row=7, column=1, columnspan=2, sticky=tk.W, padx=padx, pady=pady)
@@ -395,12 +427,31 @@ def configure():
             ret.append("-strict")
         
         return ret
-
+    def parse_command_output(output):
+        if "Command line hints" in output:
+            tail = output.split("Command line hints", 1)[1]
+            lines = tail.split("\n")
+            for line in lines:
+                if "-named_values" in line:
+                    v = line.split("-named_values",1)[1].strip()
+                    nv_entry.configure(style = "EntryStyle.TEntryAlert")
+                    nv_var.set(v)
+                elif "-extensions_to_ignore" in line:
+                    v = line.split("-extensions_to_ignore",1)[1].strip()
+                    ei_entry.configure(style = "EntryStyle.TEntryAlert")
+                    ei_var.set(v)
+                elif "-files_to_ignore" in line:
+                    v = line.split("-files_to_ignore",1)[1].strip()
+                    fi_entry.configure(style = "EntryStyle.TEntryAlert")
+                    fi_var.set(v)
+        root.update_idletasks()
+                    
     def show_command_output(cmd_line, title):
         b = os.path.exists(cmd_line[0])
         result = subprocess.run(cmd_line, stdout=subprocess.PIPE)
         text = result.stdout.decode("utf-8")
         output_box(root, title, text, the_font)
+        parse_command_output(text)
 
     # generate configuration file
     def generate_configuration():

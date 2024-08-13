@@ -1,6 +1,6 @@
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+
 #include "bpl_impl.h"
-#include <experimental/filesystem>
+
 #include <vector>
 #include <functional>
 #include <sstream>
@@ -14,8 +14,21 @@
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"
 
+// c++ filesystem support is a bit of a mess pre-C++17
+// and microsoft's support for standard __cplusplus macro is even worse
+// so we have to do horrors like this
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+//C++17 specific stuff here
+#include <filesystem>
+using path_t = std::filesystem::path;
+namespace filesystem_n = std::filesystem;
+#else
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
 using path_t = std::experimental::filesystem::path;
 namespace filesystem_n = std::experimental::filesystem;
+#endif
+
 using namespace autotelica::string_util;
 using namespace autotelica::std_pretty_printing;
 
@@ -647,6 +660,14 @@ namespace autotelica {
     const char* const tag_name = "name";
     const char* const tag_named_values = "named_values";
     const char* const tag_value = "value";
+    
+    inline std::string full_name(std::string const& section, std::string const& name) {
+        if (section.empty()) 
+            return name;
+        else 
+            return section + "." + name;
+    }
+    
     void parse_string_config(
         std::string const& config,
         named_values& values) {
@@ -721,10 +742,7 @@ namespace autotelica {
             else if (section.empty() && name == tag_files_to_ignore)
                 csv_to_vector(to_lower(line.substr(eq + 1)), files_to_ignore);
             else {
-                if (section.empty())
-                    values.add(name, line.substr(eq + 1));
-                else
-                    values.add(section + "." + name, line.substr(eq + 1));
+                values.add(full_name(section, name), line.substr(eq + 1));
             }
         }
         return true;
@@ -806,10 +824,7 @@ namespace autotelica {
                 "% objects must contain names and values.", tag_named_values);
             std::string name = get_json_string(nvo, tag_name);
             std::string value = get_json_string(nvo, tag_value);
-            if (section.empty())
-                values.add(name, value);
-            else
-                values.add(section + "." + name, value);
+            values.add(full_name(section, name), value);
         }
     }
     bool parse_json_config_file(
@@ -1143,9 +1158,7 @@ namespace autotelica {
                                 std::cout << "[needs to be defined]  ";
                                 to_define[e.first].insert(name);
                             }
-                            if (!e.first.empty())
-                                std::cout << e.first << ".";
-                            std::cout << name;
+                            std::cout << full_name(e.first, name);
                             std::cout << std::endl;
                         }
                     }
@@ -1159,16 +1172,43 @@ namespace autotelica {
             for (auto const& f : functions)
                 std::cout << '\t' << f << std::endl;
             std::cout << "\nNames to be defined:" << std::endl;
+            std::stringstream cmd_line_hints;
+            cmd_line_hints << "\nCommand line hints:";
+            if (!_source_path.empty())
+                cmd_line_hints << "\n\t-source_path " << _source_path;
+            if (!_target_path.empty())
+                cmd_line_hints << "\n\t-target_path " << _target_path;
+            if (!_config_path.empty())
+                cmd_line_hints << "\n\t-config_path" << _config_path;
+
+            cmd_line_hints << "\n\t-named_values ";
             for (auto const& e : to_define) {
                 auto tabs = "\t";
                 if (!e.first.empty()) {
                     std::cout << '\t' << '[' << e.first << ']' << std::endl;
                     tabs = "\t\t";
+                    
                 }
                 for (auto const& name : e.second) {
                     std::cout << tabs << name << std::endl;
+                    if (!e.first.empty()) {
+                        cmd_line_hints << e.first << ".";
+                    }
+                    std::string value = "UNDEFINED";
+                    std::string full = full_name(e.first, name);
+                    if (_values.exists(full)) {
+                        auto v = _values.get(full);
+                        if (!v.empty())
+                            value = v;
+                    }
+                    cmd_line_hints << name << "=" << value << "; ";
                 }
             }
+            if (!_extensions_to_ignore.empty()) 
+                cmd_line_hints << "\n\t-extensions_to_ignore " << to_csv(_extensions_to_ignore);
+            if (!_files_to_ignore.empty())
+                cmd_line_hints << "\n\t-files_to_ignore " << to_csv(_files_to_ignore);
+            std::cout << cmd_line_hints.str() << "\n";
         }
     };
 
