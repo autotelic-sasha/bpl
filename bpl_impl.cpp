@@ -44,8 +44,19 @@ namespace autotelica {
         f.read(&(result[0]), sz);
         return result;
     }
+    std::string read_file_bin(path_t const& path) {
+        std::ifstream f(path, std::ios_base::in | std::ios_base::binary);
+        const auto sz = filesystem_n::file_size(path);
+        std::string result(sz, '\0');
+        f.read(&(result[0]), sz);
+        return result;
+    }
     void write_file(path_t const& path, std::string const& s) {
         std::ofstream f(path);
+        f << s;
+    }
+    void write_file_bin(path_t const& path, std::string const& s) {
+        std::ofstream f(path, std::ios_base::out | std::ios_base::binary);
         f << s;
     }
 
@@ -984,11 +995,11 @@ namespace autotelica {
             }
             else {
                 // for everything else, we parse the content too
-                auto const content = read_file(source_path);
+                auto const content = read_file_bin(source_path);
                 AF_MESSAGE("Parsing file %.", target_path.string());
                 auto const new_content = process_content(content, _strict, _values);
                 AF_MESSAGE("Creating file %.", target_path.string());
-                write_file(target_path, new_content);
+                write_file_bin(target_path, new_content);
             }
         }
 
@@ -1189,6 +1200,8 @@ namespace autotelica {
                     tabs = "\t\t";
                     
                 }
+                size_t i = 0;
+                size_t last = e.second.size() - 1;
                 for (auto const& name : e.second) {
                     std::cout << tabs << name << std::endl;
                     if (!e.first.empty()) {
@@ -1201,7 +1214,9 @@ namespace autotelica {
                         if (!v.empty())
                             value = v;
                     }
-                    cmd_line_hints << name << "=" << value << "; ";
+                    cmd_line_hints << name << "=" << value;
+                    if(i++ != last) 
+                        cmd_line_hints << ", ";
                 }
             }
             if (!_extensions_to_ignore.empty()) 
