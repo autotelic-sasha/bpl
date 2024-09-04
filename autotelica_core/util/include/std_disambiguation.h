@@ -64,6 +64,19 @@ namespace autotelica {
         template<typename ... Ts>
         using enable_if_types_exist = void;
 
+        // shared_ptr
+        template<typename T, typename U = void>
+        struct is_shared_ptr_impl : std::false_type {};
+
+        template<typename T>
+        struct is_shared_ptr_impl<T, std::enable_if_t<std::is_same< T,
+            std::shared_ptr<typename T::element_type>>::value>> : std::true_type {};
+
+        template<typename T>
+        struct is_shared_ptr_t : is_shared_ptr_impl<T>::type {};
+
+        template<typename T>
+        constexpr bool is_shared_ptr_f(T const& t) { return is_shared_ptr_t<T>(); }
 
         // pair
         template<typename T, typename U = void>

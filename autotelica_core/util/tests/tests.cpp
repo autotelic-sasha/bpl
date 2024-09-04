@@ -7,6 +7,8 @@
 #include "std_pretty_printing_examples.h"
 #include "string_util_examples.h"
 #include "testing_util_examples.h"
+#include "timing_examples.h"
+#include "enum_to_string_examples.h"
 
 #include "test_runner_impl.h"
 int main(int argc, const char* argv[])

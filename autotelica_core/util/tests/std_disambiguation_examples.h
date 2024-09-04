@@ -37,6 +37,12 @@ namespace autotelica {
 				std::string string_{ "test string" };
 				std::wstring wstring_{ L"test string" };
 
+				std::shared_ptr<int> pi_;
+				// shared_ptr
+				AF_TEST_COMMENT("shared_ptr");
+				AF_TEST_RESULT(true, is_shared_ptr_f(pi_));
+				AF_TEST_RESULT(false, is_shared_ptr_f(array_));
+
 				// vector
 				AF_TEST_COMMENT("vector");
 				AF_TEST_RESULT(false, is_vector_f(array_));
