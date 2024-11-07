@@ -242,7 +242,7 @@ namespace autotelica {
 				}
 				else {
 					messages::message(
-						"SUCCESS: % evaluated to %.",
+						"SUCCESS: % evaluated to: %.",
 						code_snippet,
 						quote_string<T>(result).value());
 				}
@@ -342,7 +342,7 @@ namespace autotelica {
 				else {
 					if (throw_on_difference) {
 						messages::error_ex(file_name, line,
-							"%  evaluated to % but expected value was: %.",
+							"%  evaluated to: %, but expected value was: %.",
 							code_snippet,
 							quote_string<T>(actual).value(),
 							quote_string<T>(expected).value()
@@ -350,7 +350,7 @@ namespace autotelica {
 					}
 					else {
 						messages::error_text_ex(file_name, line,
-							"%  evaluated to % but expected value was: %.",
+							"%  evaluated to: %, but expected value was: %.",
 							code_snippet,
 							quote_string<T>(actual).value(),
 							quote_string<T>(expected).value()
@@ -420,7 +420,7 @@ namespace autotelica {
 			}
 
 			template<typename lambda_t>
-			void test_no_throw(
+			static void test_no_throw(
 				const char* const macro_name,
 				lambda_t lambda,
 				const char* const code_snippet,
@@ -445,7 +445,7 @@ namespace autotelica {
 			}
 
 			template<typename lambda_t>
-			void test_throws(
+			static void test_throws(
 				const char* const macro_name,
 				lambda_t lambda,
 				const char* const code_snippet,
@@ -469,7 +469,7 @@ namespace autotelica {
 				}
 			}
 			template<typename result_t, typename lambda_t>
-			void test_result(
+			static void test_result(
 				result_t const& expected_result,
 				const char* const macro_name,
 				lambda_t lambda,
@@ -501,7 +501,7 @@ namespace autotelica {
 				}
 			}
 
-			void comment_test(const char* const comment) {
+			static void comment_test(const char* const comment) {
 				using namespace autotelica::diagnostic_messages;
 				using config = autotelica::testing::testing_config;
 				if (config::is_run_mode_csv()) {
@@ -549,9 +549,23 @@ namespace autotelica {
 				std::string const& file_, 
 				std::string const& class_
 				) {
-				if (_tests.find(name) != _tests.end()) {
-					throw std::runtime_error(
-						string_util::af_format_string("Test runner % is already registered", name));
+				// we look for duplicates, but we are very forgiving of static initialisation issues
+				auto const& existing = _tests.find(name);
+				if (existing != _tests.end()) {
+					if (existing->second._class != class_) {
+						auto error = string_util::af_format_string(
+							"ERROR: Test runner % is already registered with different class name.(first % , now %)",
+							name, existing->second._class, class_);
+						std::cout << error << std::endl;
+						throw std::runtime_error(error);
+					}
+					else if (existing->second._file != file_) {
+						auto error = string_util::af_format_string(
+							"ERROR: Test runner % is already registered with different file name.(first % , now %)",
+							name, existing->second._file, file_);
+						std::cout << error << std::endl;
+						throw std::runtime_error(error);
+					}
 				}
 				_tests[name] = test_record{ runner, file_, class_ };
 			}
@@ -830,6 +844,9 @@ namespace autotelica {
 			void run_recording() const override { af_record(); }
 		};
 
+
+// alas, sometimes we need to pass a comman to macros
+#define AF_COMMA ,		
 // setup the needed boring members of a test set runner class
 #define AF_TEST_SET( test_set_name_ )    \
 	static constexpr char const* test_set_name() { return test_set_name_; } \
