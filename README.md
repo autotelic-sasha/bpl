@@ -9,7 +9,7 @@ It is extensible, it can be extended in ways that will make it complicated. You 
 **It takes as inputs:**
 
 1. The folder containing the file templates.
-2. A mapping of names to values (either as an argument or as a configufation file).
+2. A mapping of names to values (either as an argument or as a configuration file).
 3. A target folder where the new code project is to be generated.
 4. A few other runtime configuration parameters:
     1. *strict* means that errors are reported when a replacement is not found and bpl thinks it should be.
@@ -50,12 +50,12 @@ You can configure visuals in blp_gui.ini file, and run it with -h command line o
     - otherwise it is replaces by the value as it appears in the input map.
     
 6.  In file and directory names:
-    - names to be replaced are delimeted by two underscores either side of it (like **\_\_name__**).
+    - names to be replaced are delimited by two underscores either side of it (like **\_\_name__**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - there are no escape characters for file and directory name replacements.
 
 7.  In the files' content:
-    - names to be replaced are delimeted by two curly braces either side of it (like **{{name}}**).
+    - names to be replaced are delimited by two curly braces either side of it (like **{{name}}**).
     - if a name is not found in the map, nothing happens, no errors are thrown. (there is a strict mode of running that makes this an error, if you really want to).
     - whitespace surrounding names in the braces is eaten.
     - nesting is not allowed (e.g. you can't do silly things like {{name1{{name2}}name3}}, it's rude to expect people to be able to read that).

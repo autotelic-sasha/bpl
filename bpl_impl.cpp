@@ -5,6 +5,7 @@
 #include <functional>
 #include <sstream>
 #include <istream>
+#include <fstream>
 #include <algorithm>
 #include <random>
 #include <cstdlib>
@@ -82,10 +83,17 @@ namespace autotelica {
                 auto const new_dot_git_folder = target_file.parent_path().append(".original_dot_git");
                 filesystem_n::rename(dot_git_folder, new_dot_git_folder);
             }
+            auto update_file_base_name = target_file.parent_path().append("update_" + target_file.parent_path().filename().string()).string();
+            std::ofstream shfile(update_file_base_name + ".sh");
+            shfile << "#!/usr/bin/sh\nmv .original_dot_git .git\ngit fetch --all\ngit reset --hard origin/main\nmv .git .original_dot_git\n";
+            shfile.close();
+            std::ofstream batfile(update_file_base_name + ".sh");
+            batfile << "attrib -h .original_dot_git\nmove .original_dot_git .git\ngit fetch --all\ngit reset --hard origin/main\nmove .git .original_dot_git\nattrib +h .original_dot_git";
+            batfile.close();
         }
 
         // 'specials' is a registry that maps special file names to functions that handle them
-        using specials_t = string_map_nc<std::function<void(path_t const&, path_t const&)>>;
+        using specials_t = map_nc<std::function<void(path_t const&, path_t const&)>>;
         static specials_t const& _specials() {
             static specials_t _specials{ {"__GITCLONE__", get_from_github} };
             return _specials;
@@ -121,7 +129,7 @@ namespace autotelica {
     // This is a container for the simple replacement values. 
     // It implements the bpl semantics for handling the case of replacemens.
     class named_values {
-        string_map_nc<std::string> _values;
+        map_nc<std::string> _values;
     public:
         bool exists(std::string const& name) const {
             return _values.find(trim(name)) != _values.end();
@@ -227,7 +235,7 @@ namespace autotelica {
         // at the core of it is a non-case sensitive mapping
         // of function names to factory functions that create function objects (LOL, but it is all functional :D)
         // ok, ok ... in the lingo: 'functions' is an abstract factory of 'function' objects
-        using registry_t = string_map_nc<std::function<std::shared_ptr<function>()>>;
+        using registry_t = map_nc<std::function<std::shared_ptr<function>()>>;
         static registry_t& registry() {
             static registry_t _instance;
             return _instance;
@@ -599,7 +607,7 @@ namespace autotelica {
     // This is helpful to document templates, examine them, and generate blank configuration files.
     // Because of escaping in content, the logic is slightly different for file names and content.
     // In the end it makes it more readable to have two separate functions, even though thery are very similar.
-    void list_required_names_for_filename(std::string const& path, string_map_nc<string_set_nc>& sections) {
+    void list_required_names_for_filename(std::string const& path, map_nc<set_nc<std::string>>& sections) {
         size_t dot{ 0 };
         char c = path[dot];
         while (c) {
@@ -631,7 +639,7 @@ namespace autotelica {
     }
     void list_required_names(
         std::string const& content,
-        string_map_nc<string_set_nc>& sections,
+        map_nc<set_nc<std::string>>& sections,
         bool ignore_functions = true) {
         size_t dot{ 0 };
         char c = content[dot];
@@ -759,7 +767,7 @@ namespace autotelica {
         return true;
     }
     std::string create_template_ini(
-        string_map_nc<string_set_nc> const& sections,
+        map_nc<set_nc<std::string>> const& sections,
         std::vector<std::string> const& extensions_to_ignore_,
         std::vector<std::string> const& files_to_ignore_) {
         std::stringstream out;
@@ -776,7 +784,7 @@ namespace autotelica {
         return out.str();
     }
     std::string create_template_json(
-        string_map_nc<string_set_nc> const& sections,
+        map_nc<set_nc<std::string>> const& sections,
         std::vector<std::string> const& extensions_to_ignore_,
         std::vector<std::string> const& files_to_ignore_
     ) {
@@ -1091,10 +1099,12 @@ namespace autotelica {
                 }
                 catch (std::exception& e) {
                     // this is all just to avoid duplicating error messages, AF_ERROR prints them already
-                    if (wildcard_match(e.what(), "[*] ERROR: *"))
+                    if (wildcard_match(e.what(), "[*] ERROR: *")) {
                         AF_ERROR("Error while processing %.", p.path().string());
-                    else
+                    }
+                    else {
                         AF_ERROR("Error while processing % :\n %", p.path().string(), e.what());
+                    }
                 }
                 catch (...) {
                     AF_ERROR("Unknown error while processing %.", p.path().string());
@@ -1105,7 +1115,7 @@ namespace autotelica {
         // generating blank configuration files
         // then you just populate them with values,it's nice
         void generate_config_files() {
-            string_map_nc<string_set_nc> sections;
+            map_nc<set_nc<std::string>> sections;
             using recursive_directory_iterator = filesystem_n::recursive_directory_iterator;
             for (const auto& p : recursive_directory_iterator(_source_path)) {
                 list_required_names_for_filename(p.path().string(), sections);
@@ -1130,14 +1140,14 @@ namespace autotelica {
         // use 'describe' to get information about it.
         void describe() {
             // it's long but boring, adding comments would make it both longer and boringer
-            string_map_nc<string_set_nc> to_define;
+            map_nc<set_nc<std::string>> to_define;
             std::vector<std::string> functions;
             std::vector<std::string> special_files;
 
             std::cout << "Template: " << _source_path << std::endl << std::endl;
             using recursive_directory_iterator = filesystem_n::recursive_directory_iterator;
             for (const auto& p : recursive_directory_iterator(_source_path)) {
-                string_map_nc<string_set_nc> sections;
+                map_nc<set_nc<std::string>> sections;
                 list_required_names_for_filename(p.path().string(), sections);
                 if (!(special_files::is_special(p) || ignored(p) || filesystem_n::is_directory(p))){
                     auto const content = read_file(p);
